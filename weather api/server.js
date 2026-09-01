@@ -1,7 +1,9 @@
+const cors = require("cors");
 const express = require("express");
 require("dotenv").config();
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 async function getWeather(req,res){
     const city = req.query.city;
@@ -21,11 +23,15 @@ async function getWeather(req,res){
         }
         const data = await response.json();
         const celsius = Number((data.main.temp - 273.15).toFixed(2));
-        const mdata = {city: req.query.city,
+        const mdata = {
+            city: req.query.city,
             temperature: celsius,
+            feelsLike: Number((data.main.feels_like - 273.15).toFixed(2)),
+            humidity: data.main.humidity,
+            windSpeed: data.wind.speed,
             weather: data.weather[0].main,
             description: data.weather[0].description
-        }
+};
         return res.json(mdata);
     }catch(error){
         return res.status(500).json({
