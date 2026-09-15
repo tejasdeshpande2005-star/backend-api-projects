@@ -5,7 +5,7 @@ const {
 } = require("../controllers/cartControllers");
 const router = express.Router();
 router.post("/",authMiddleware,addToCart);
-router.get("/:userId",authMiddleware,getCart);
-router.put("/:userId/:productId",authMiddleware,updateCartQuantity);
-router.delete("/:userId/:productId",authMiddleware,removeFromCart);
+router.get("/",authMiddleware,getCart);
+router.put("/:productId",authMiddleware,updateCartQuantity);
+router.delete("/:productId",authMiddleware,removeFromCart);
 module.exports = router;

@@ -4,7 +4,7 @@ const Product = require("../models/Product");
 
 const createOrder = async (req, res, next) => {
     try {
-        const { userId } = req.body;
+        const userId  = req.user.id;
 
         // Find user's cart
         const cart = await Cart.findOne({ userId })
@@ -82,7 +82,7 @@ const createOrder = async (req, res, next) => {
 
 const getUserOrders = async(req,res,next)=>{
     try{
-        const {userId} = req.params;
+        const userId = req.user.id;
         const orders = await Order.find({ userId }).populate("items.productId").sort({createdAt: -1});
         return res.status(200).json({orders});
     }
@@ -139,8 +139,8 @@ const updateOrderStatus = async (req, res, next) => {
 const cancelOrder = async (req, res, next) => {
     try {
         const { orderId } = req.params;
-
-        const order = await Order.findById(orderId);
+        const userId = req.user.id;
+        const order = await Order.findOne({_id: orderId,userId: userId});
 
         if (!order) {
             return res.status(404).json({
