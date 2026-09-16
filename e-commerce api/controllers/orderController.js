@@ -111,20 +111,35 @@ const updateOrderStatus = async (req, res, next) => {
             });
         }
 
-        const order = await Order.findByIdAndUpdate(
-            orderId,
-            { status },
-            {
-                new: true,
-                runValidators: true
-            }
-        );
+        // Find the order first
+        const order = await Order.findById(orderId);
 
         if (!order) {
             return res.status(404).json({
                 message: "Order not found"
             });
         }
+
+        // Define allowed status transitions
+        const allowedTransitions = {
+            Pending: ["Confirmed", "Cancelled"],
+            Confirmed: ["Shipped", "Cancelled"],
+            Shipped: ["Delivered"],
+            Delivered: [],
+            Cancelled: []
+        };
+
+        // Check whether the transition is allowed
+        if (!allowedTransitions[order.status].includes(status)) {
+            return res.status(400).json({
+                message: `Cannot change order status from ${order.status} to ${status}`
+            });
+        }
+
+        // Update status
+        order.status = status;
+
+        await order.save();
 
         return res.status(200).json({
             message: "Order status updated successfully",

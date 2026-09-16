@@ -6,6 +6,7 @@ const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const userRoutes = require("./routes/userRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 const app = express();
 app.use(express.json());
 
@@ -26,5 +27,15 @@ app.use("/api/products",productRoutes);
 app.use("/api/carts",cartRoutes);
 app.use("/api/users",userRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/payments", paymentRoutes);
+
+// Global error handling middleware
+app.use((error, req, res, next) => {
+    console.error(error);
+
+    res.status(500).json({
+        message: "Internal server error"
+    });
+});
 
 app.listen(3000,()=>{console.log("SERVER 3000")});
