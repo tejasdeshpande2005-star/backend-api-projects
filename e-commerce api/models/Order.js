@@ -21,6 +21,7 @@ const orderSchema = new mongoose.Schema({
                 min: 1
             },
 
+            // Price at the time the order was created
             price: {
                 type: Number,
                 required: true
@@ -33,15 +34,43 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
 
+    paymentMethod: {
+        type: String,
+        enum: ["COD", "Stripe"],
+        default: "COD"
+    },
+
+    paymentStatus: {
+        type: String,
+        enum: ["Pending", "Paid", "Failed", "Refunded"],
+        default: "Pending"
+    },
+
+    stripeSessionId: {
+        type: String,
+        default: null
+    },
+
+    // Used to identify abandoned Stripe checkout sessions
+    checkoutExpiresAt: {
+        type: Date,
+        default: null
+    },
+
     status: {
         type: String,
-        enum: ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"],
+        enum: [
+            "Pending",
+            "Confirmed",
+            "Shipped",
+            "Delivered",
+            "Cancelled"
+        ],
         default: "Pending"
-    }},
-    {
-        timestamps: true
     }
-);
+}, {
+    timestamps: true
+});
 
 const Order = mongoose.model("Order", orderSchema);
 

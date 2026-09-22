@@ -49,10 +49,10 @@ const createOrder = async (req, res, next) => {
         const order = new Order({
             userId,
             items: orderItems,
-            totalPrice
-        });
-
-        await order.save();
+            totalPrice,
+            paymentMethod: "COD",
+            paymentStatus: "Pending",
+            status: "Pending"});
 
         // Reduce product stock
         for (const item of cart.items) {
